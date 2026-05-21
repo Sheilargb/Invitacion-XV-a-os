@@ -52,3 +52,32 @@ if (carousel) {
     previousButton.addEventListener("click", () => showSlide(activeIndex - 1));
     nextButton.addEventListener("click", () => showSlide(activeIndex + 1));
 }
+
+const musicToggle = document.querySelector("[data-music-toggle]");
+const musicAudio = document.querySelector("[data-music-audio]");
+
+if (musicToggle && musicAudio) {
+    const updateMusicButton = () => {
+        const isPlaying = !musicAudio.paused;
+        musicToggle.classList.toggle("is-playing", isPlaying);
+        musicToggle.setAttribute("aria-label", isPlaying ? "Pausar musica" : "Reproducir musica");
+    };
+
+    musicToggle.addEventListener("click", async () => {
+        try {
+            if (musicAudio.paused) {
+                await musicAudio.play();
+            } else {
+                musicAudio.pause();
+            }
+        } catch (error) {
+            musicToggle.classList.remove("is-playing");
+        }
+
+        updateMusicButton();
+    });
+
+    musicAudio.addEventListener("play", updateMusicButton);
+    musicAudio.addEventListener("pause", updateMusicButton);
+    musicAudio.addEventListener("ended", updateMusicButton);
+}
